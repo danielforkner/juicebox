@@ -5,6 +5,7 @@ const {
   updateUser,
   createPost,
   getAllPosts,
+  getUserById,
 } = require('./index');
 
 async function createInitialUsers() {
@@ -41,28 +42,30 @@ async function createInitialUsers() {
 
 async function createInitialPosts() {
   try {
+    console.log('Creating initial posts...');
     const [albert, sandra, glamgal] = await getAllUsers();
 
     await createPost({
-      authoID: albert.id,
+      authorID: albert.id,
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
     });
 
     await createPost({
-      authoID: sandra.id,
+      authorID: sandra.id,
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
     });
 
     await createPost({
-      authoID: glamgal.id,
+      authorID: glamgal.id,
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
     });
+    console.log('Initial posts created.');
   } catch (error) {
     throw error;
   }
@@ -71,13 +74,17 @@ async function createInitialPosts() {
 // this function should call a query which drops all tables from our database
 async function dropTables() {
   try {
-    console.log('starting to drop tables...');
+    console.log('Starting to drop tables...');
+
+    await client.query(`
+    DROP TABLE IF EXISTS posts;
+        `);
 
     await client.query(`
     DROP TABLE IF EXISTS users;
         `);
 
-    console.log('finished dropping tables.');
+    console.log('Finished dropping tables.');
   } catch (error) {
     throw error; // we pass the error up to the function that calls dropTables
   }
@@ -86,7 +93,7 @@ async function dropTables() {
 // this function should call a query which creates all tables for our database
 async function createTables() {
   try {
-    console.log('building tables...');
+    console.log('Building tables...');
     await client.query(`
     CREATE TABLE users (
         id SERIAL PRIMARY KEY,
@@ -105,7 +112,7 @@ async function createTables() {
         content TEXT NOT NULL,
         active BOOLEAN DEFAULT true
     )`);
-    console.log('finished building tables.');
+    console.log('Finished building tables.');
   } catch (error) {
     throw error; // we pass the error up to the function that calls createTables
   }
@@ -126,22 +133,26 @@ async function rebuildDB() {
 
 async function testDB() {
   try {
-    console.log('testing database...');
+    console.log('Testing database...');
 
-    console.log('Calling getAllUsers');
+    console.log('Calling getAllUsers...');
     const users = await getAllUsers();
     console.log('getAllUsers:', users);
 
-    console.log('Calling updateUser on users[0]');
+    console.log('Calling updateUser on users[0]...');
     const updateUserResult = await updateUser(users[0].id, {
       name: 'Newname Sogood',
       location: 'Lesterville, KY',
     });
     console.log('Result:', updateUserResult);
 
-    console.log('Calling getAllPosts');
+    console.log('Calling getAllPosts...');
     const posts = await getAllPosts();
     console.log('Posts:', posts);
+
+    console.log('Calling getUserById with 1...');
+    const albert = await getUserById(1);
+    console.log('Result:', albert);
 
     console.log('Finished database tests.');
   } catch (error) {

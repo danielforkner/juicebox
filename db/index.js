@@ -22,6 +22,12 @@ async function createPost({ authorID, title, content }) {
 
 async function getAllPosts() {
   try {
+    const { rows } = await client.query(
+      `SELECT *
+            FROM posts;`
+    );
+
+    return rows;
   } catch (error) {
     throw error;
   }
@@ -29,9 +35,9 @@ async function getAllPosts() {
 
 async function getPostsByUser(userId) {
   try {
-    const { rows } = client.query(`
+    const { rows } = await client.query(`
         SELECT * FROM posts
-        WHERE "authorId"=${userId};`);
+        WHERE "authorID"=${userId};`);
 
     return rows;
   } catch (error) {
@@ -68,16 +74,11 @@ async function createUser({ username, password, name, location }) {
 
 async function getUserById(userId) {
   try {
-    const {
-      rows: [user],
-    } = await client.query(`
+    const { rows } = await client.query(`
     SELECT * FROM users WHERE id=${userId}`);
-
     if (rows.length === 0) return null;
-
-    user.posts = await getPostsByUser(userId);
-
-    return user;
+    rows[0].posts = await getPostsByUser(userId); // undefined??
+    return rows[0];
   } catch (error) {
     throw error;
   }
