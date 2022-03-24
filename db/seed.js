@@ -8,6 +8,7 @@ const {
   getUserById,
   createTags,
   addTagsToPost,
+  updatePost,
 } = require('./index');
 
 async function createInitialUsers() {
@@ -50,6 +51,7 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
+      tags: ['testing', 'tags', 'test'],
     });
 
     await createPost({
@@ -57,6 +59,7 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
+      tags: ['testing', 'tags', 'test'],
     });
 
     await createPost({
@@ -64,35 +67,36 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
+      tags: ['testing', 'tags', 'test'],
     });
   } catch (error) {
     throw error;
   }
 }
 
-async function createInitialTags() {
-  try {
-    console.log('Creating tags...');
+// async function createInitialTags() {
+//   try {
+//     console.log('Creating tags...');
 
-    const [bigdogs, smalldogs, largedogs, tinydogs, friendlydogs] =
-      await createTags([
-        'bigdogs',
-        'smalldogs',
-        'largedogs',
-        'tinydogs',
-        'friendlydogs',
-      ]);
+//     const [bigdogs, smalldogs, largedogs, tinydogs, friendlydogs] =
+//       await createTags([
+//         'bigdogs',
+//         'smalldogs',
+//         'largedogs',
+//         'tinydogs',
+//         'friendlydogs',
+//       ]);
 
-    const [postOne, postTwo, postThree] = await getAllPosts();
+//     const [postOne, postTwo, postThree] = await getAllPosts();
 
-    await addTagsToPost(postOne.id, [bigdogs, smalldogs]);
-    await addTagsToPost(postTwo.id, [largedogs, tinydogs]);
-    await addTagsToPost(postThree.id, [tinydogs, friendlydogs]);
-  } catch (error) {
-    console.log('ERROR: cannot create tags.');
-    throw error;
-  }
-}
+//     await addTagsToPost(postOne.id, [bigdogs, smalldogs]);
+//     await addTagsToPost(postTwo.id, [largedogs, tinydogs]);
+//     await addTagsToPost(postThree.id, [tinydogs, friendlydogs]);
+//   } catch (error) {
+//     console.log('ERROR: cannot create tags.');
+//     throw error;
+//   }
+// }
 
 // this function should call a query which drops all tables from our database
 async function dropTables() {
@@ -158,7 +162,7 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialPosts();
-    await createInitialTags();
+    // await createInitialTags();
     console.log('DONE rebuilding db.');
   } catch (error) {
     console.error(error);
@@ -185,6 +189,13 @@ async function testDB() {
     const albert = await getUserById(1);
 
     console.log('DONE with database tests.');
+
+    console.log("Calling updatePost on posts[1], only updating tags");
+    const updatePostTagsResult = await updatePost(posts[1].id, {
+      tags: ["#youcandoanything", "#redfish", "#bluefish"]
+    });
+    console.log("Result:", updatePostTagsResult);
+
   } catch (error) {
     console.error(error);
   } finally {
