@@ -6,8 +6,7 @@ const {
   createPost,
   getAllPosts,
   getUserById,
-  createTags,
-  addTagsToPost,
+  getPostsByTagName,
   updatePost,
 } = require('./index');
 
@@ -188,14 +187,16 @@ async function testDB() {
     console.log('Calling getUserById with 1...');
     const albert = await getUserById(1);
 
-    console.log('DONE with database tests.');
-
-    console.log("Calling updatePost on posts[1], only updating tags");
+    console.log('Calling updatePost on posts[1], only updating tags');
     const updatePostTagsResult = await updatePost(posts[1].id, {
-      tags: ["#youcandoanything", "#redfish", "#bluefish"]
+      tags: ['#youcandoanything', '#redfish', '#bluefish'],
     });
-    console.log("Result:", updatePostTagsResult);
 
+    console.log('Calling getPostsByTagName with #testing');
+    const postsWithTesting = await getPostsByTagName('testing');
+    console.log('Result:', postsWithTesting);
+
+    console.log('DONE with database tests.');
   } catch (error) {
     console.error(error);
   } finally {
