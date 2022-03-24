@@ -7,6 +7,7 @@ const {
   getAllPosts,
   getUserById,
   createTags,
+  addTagsToPost,
 } = require('./index');
 
 async function createInitialUsers() {
@@ -72,6 +73,32 @@ async function createInitialPosts() {
   }
 }
 
+async function createInitialTags() {
+  try {
+    console.log('Creating tags...');
+
+    const [bigdogs, smalldogs, largedogs, tinydogs, friendlydogs] =
+      await createTags([
+        'bigdogs',
+        'smalldogs',
+        'largedogs',
+        'tinydogs',
+        'friendlydogs',
+      ]);
+
+    const [postOne, postTwo, postThree] = await getAllPosts();
+
+    await addTagsToPost(postOne.id, [bigdogs, smalldogs]);
+    await addTagsToPost(postTwo.id, [largedogs, tinydogs]);
+    await addTagsToPost(postThree.id, [tinydogs, friendlydogs]);
+
+    console.log('DONE creating tags.');
+  } catch (error) {
+    console.log('ERROR: cannot create tags.');
+    throw error;
+  }
+}
+
 // this function should call a query which drops all tables from our database
 async function dropTables() {
   try {
@@ -82,7 +109,7 @@ async function dropTables() {
         `);
 
     await client.query(`
-      DROP TABLE IF EXISTS tags;
+    DROP TABLE IF EXISTS tags;
         `);
 
     await client.query(`    
@@ -129,11 +156,10 @@ async function createTables() {
     )`);
 
     await client.query(`
-    CREATE TABLE posts_tags (
+    CREATE TABLE post_tags (
         "postId" INTEGER REFERENCES posts(id) UNIQUE,
         "tagId" INTEGER REFERENCES tags(id) UNIQUE
     )`);
-
 
     console.log('Finished building tables.');
   } catch (error) {
@@ -149,6 +175,7 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialPosts();
+    await createInitialTags();
   } catch (error) {
     console.error(error);
   }
@@ -176,10 +203,6 @@ async function testDB() {
     console.log('Calling getUserById with 1...');
     const albert = await getUserById(1);
     console.log('Result:', albert);
-
-    console.log('Calling createTags');
-    const tags = await createTags(['test234', 'testing456', '123123']);
-    console.log('createTags:', tags);
 
     console.log('Finished database tests.');
   } catch (error) {
