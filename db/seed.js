@@ -77,10 +77,18 @@ async function dropTables() {
     console.log('Starting to drop tables...');
 
     await client.query(`
-    DROP TABLE IF EXISTS posts;
+    DROP TABLE IF EXISTS posts_tags;
         `);
 
     await client.query(`
+      DROP TABLE IF EXISTS tags;
+        `);
+
+    await client.query(`    
+    DROP TABLE IF EXISTS posts;
+        `);
+
+    await client.query(`    
     DROP TABLE IF EXISTS users;
         `);
 
