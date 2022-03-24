@@ -112,6 +112,20 @@ async function createTables() {
         content TEXT NOT NULL,
         active BOOLEAN DEFAULT true
     )`);
+
+    await client.query(`
+    CREATE TABLE tags (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) UNIQUE NOT NULL
+    )`);
+
+    await client.query(`
+    CREATE TABLE posts_tags (
+        "postId" INTEGER REFERENCES posts(id) UNIQUE,
+        "tagId" INTEGER REFERENCES tags(id) UNIQUE
+    )`);
+
+
     console.log('Finished building tables.');
   } catch (error) {
     throw error; // we pass the error up to the function that calls createTables
