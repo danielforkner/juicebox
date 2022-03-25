@@ -1,6 +1,6 @@
-const { Client } = require('pg');
+const { Client } = require("pg");
 
-const client = new Client('postgres://localhost:5432/juicebox-dev');
+const client = new Client("postgres://localhost:5432/juicebox-dev");
 
 // POSTS
 async function createPost({ authorID, title, content, tags = [] }) {
@@ -65,7 +65,7 @@ async function updatePost(postId, fields = {}) {
   // build the set string
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(', ');
+    .join(", ");
 
   try {
     // update any fields that need to be updated
@@ -88,7 +88,7 @@ async function updatePost(postId, fields = {}) {
 
     // make any new tags that need to be made
     const tagList = await createTags(tags);
-    const tagListIdString = tagList.map((tag) => `${tag.id}`).join(', ');
+    const tagListIdString = tagList.map((tag) => `${tag.id}`).join(", ");
 
     // delete any post_tags from the database which aren't in that tagList
     await client.query(
@@ -155,7 +155,7 @@ async function updateUser(id, fields = {}) {
   //build the set string
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}"=$${index + 1}`)
-    .join(', ');
+    .join(", ");
 
   // return early if this is called without fields
   if (setString.length === 0) {
@@ -186,11 +186,11 @@ async function createTags(tagList) {
   }
 
   // need something like: $1), ($2), ($3
-  const insertValues = tagList.map((_, index) => `$${index + 1}`).join('), (');
+  const insertValues = tagList.map((_, index) => `$${index + 1}`).join("), (");
   // then we can use: (${ insertValues }) in our string template
 
   // need something like $1, $2, $3
-  const selectValues = tagList.map((_, index) => `$${index + 1}`).join(', ');
+  const selectValues = tagList.map((_, index) => `$${index + 1}`).join(", ");
   // then we can use (${ selectValues }) in our string template
 
   try {
@@ -320,6 +320,25 @@ async function getPostsByTagName(tagName) {
   }
 }
 
+async function getUserByUsername(username) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT *
+      FROM users
+      WHERE username=$1;
+    `,
+      [username]
+    );
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   client,
   getAllUsers,
@@ -336,4 +355,5 @@ module.exports = {
   addTagsToPost,
   createPostTag,
   updatePost,
+  getUserByUsername,
 };
