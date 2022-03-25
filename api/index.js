@@ -1,17 +1,17 @@
 // ROUTERS
-const apiRouter = require("express").Router();
-const usersRouter = require("./users");
-const postsRouter = require("./posts");
-const tagsRouter = require("./tags");
+const apiRouter = require('express').Router();
+const usersRouter = require('./users');
+const postsRouter = require('./posts');
+const tagsRouter = require('./tags');
 
 // JWT
-const jwt = require("jsonwebtoken");
-const { getUserById } = require("../db");
+const jwt = require('jsonwebtoken');
+const { getUserById } = require('../db');
 const { JWT_SECRET } = process.env;
 
 apiRouter.use(async (req, res, next) => {
-  const prefix = "Bearer ";
-  const auth = req.header("Authorization");
+  const prefix = 'Bearer ';
+  const auth = req.header('Authorization');
 
   if (!auth) {
     // nothing to see here
@@ -31,7 +31,7 @@ apiRouter.use(async (req, res, next) => {
     }
   } else {
     next({
-      name: "AuthorizationHeaderError",
+      name: 'AuthorizationHeaderError',
       message: `Authorization token must start with ${prefix}`,
     });
   }
@@ -39,7 +39,7 @@ apiRouter.use(async (req, res, next) => {
 
 apiRouter.use((req, res, next) => {
   if (req.user) {
-    console.log("User is set:", req.user);
+    console.log('User is set:', req.user);
   }
 
   next();
@@ -49,9 +49,9 @@ apiRouter.use((req, res, next) => {
 //   req.message("you are on the api page");
 //   next();
 // });
-apiRouter.use("/users", usersRouter);
-apiRouter.use("/posts", postsRouter);
-apiRouter.use("/tags", tagsRouter);
+apiRouter.use('/users', usersRouter);
+apiRouter.use('/posts', postsRouter);
+apiRouter.use('/tags', tagsRouter);
 
 apiRouter.use((error, req, res, next) => {
   res.send({
