@@ -5,7 +5,7 @@ const { getAllTags, getPostsByTagName } = require('../db');
 // tagsRouter.use('/', async (req, res) => {
 //   const tags = await getAllTags();
 
-//   res.send({ tags });
+//   next({ tags });
 // });
 
 tagsRouter.get('/:tagName/posts', async (req, res, next) => {
