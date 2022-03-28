@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const postsRouter = express.Router();
 const {
   getAllPosts,
@@ -6,17 +6,48 @@ const {
   getUserByUsername,
   updatePost,
   getPostById,
-} = require("../db");
-const { requireUser } = require("./utils");
+} = require('../db');
+const { requireUser } = require('./utils');
 
-postsRouter.get("/", async (req, res, next) => {
-  const posts = await getAllPosts();
+postsRouter.delete('/:postId', requireUser, async (req, res, next) => {
+  try {
+    const post = await getPostById(req.params.postId);
 
-  res.send({ posts });
+    if (post && post.author.id === req.user.id) {
+      const updatedPost = await updatePost(post.id, { active: false });
+
+      res.send({ post: updatedPost });
+    } else {
+      if (!post) {
+        next({
+          name: 'Post does not exist',
+          message: 'You cannot delete something that does not exist',
+        });
+      } else {
+        next({
+          name: 'Unauthorized',
+          message: "You cannot delete someone else's post",
+        });
+      }
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
 });
 
-postsRouter.post("/", requireUser, async (req, res, next) => {
-  const { title, content, tags = "" } = req.body;
+postsRouter.get('/', async (req, res, next) => {
+  try {
+    const allPosts = await getAllPosts();
+    const posts = allPosts.filter((post) => {
+      return post.active || (req.user && post.author.id === req.user.id);
+    });
+
+    res.send({ posts });
+  } catch (error) {}
+});
+
+postsRouter.post('/', requireUser, async (req, res, next) => {
+  const { title, content, tags = '' } = req.body;
 
   const tagArr = tags.trim().split(/\s+/);
   const postData = {};
@@ -37,8 +68,8 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
       res.send({ post });
     } else {
       next({
-        name: "Create Post Error",
-        message: "Failed to create post",
+        name: 'Create Post Error',
+        message: 'Failed to create post',
       });
     }
   } catch ({ name, message }) {
@@ -49,7 +80,7 @@ postsRouter.post("/", requireUser, async (req, res, next) => {
   }
 });
 
-postsRouter.patch("/:postId", requireUser, async (req, res, next) => {
+postsRouter.patch('/:postId', requireUser, async (req, res, next) => {
   const { postId } = req.params;
   const { title, content, tags } = req.body;
   const updateFields = {};
@@ -74,8 +105,8 @@ postsRouter.patch("/:postId", requireUser, async (req, res, next) => {
       res.send({ post: updatedPost });
     } else {
       next({
-        name: "unAuthorizedUserError",
-        message: "You cannot update a post that is not yours",
+        name: 'unAuthorizedUserError',
+        message: 'You cannot update a post that is not yours',
       });
     }
   } catch ({ name, message }) {
