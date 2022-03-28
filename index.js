@@ -1,27 +1,27 @@
-require("dotenv").config();
+require('dotenv').config();
 
-const PORT = 3000;
-const express = require("express");
+const { PORT = 3000 } = process.env;
+const express = require('express');
 const server = express();
-const apiRouter = require("./api");
-const morgan = require("morgan");
+const apiRouter = require('./api');
+const morgan = require('morgan');
 
-server.use(morgan("dev"));
+server.use(morgan('dev'));
 server.use(express.json());
 
 server.use((req, res, next) => {
-  console.log("<____Body Logger START____>");
+  console.log('<____Body Logger START____>');
   console.log(req.body);
-  console.log("<_____Body Logger END_____>");
+  console.log('<_____Body Logger END_____>');
 
   next();
 });
 
-server.use("/api", apiRouter);
+server.use('/api', apiRouter);
 
-const { client } = require("./db");
+const { client } = require('./db');
 client.connect();
 
 server.listen(PORT, () => {
-  console.log("Server is live on port:", PORT);
+  console.log('Server is live on port:', PORT);
 });
