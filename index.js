@@ -17,6 +17,10 @@ server.use((req, res, next) => {
   next();
 });
 
+server.get('/', (req, res, next) => {
+  res.send("Welcome to Daniel and Derrick's JuiceBox App!");
+});
+
 server.use('/api', apiRouter);
 
 const { client } = require('./db');
