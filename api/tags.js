@@ -5,13 +5,17 @@ const { getAllTags, getPostsByTagName } = require('../db');
 // tagsRouter.use('/', async (req, res) => {
 //   const tags = await getAllTags();
 
-//   next({ tags });
+//   res.send({ tags });
 // });
 
 tagsRouter.get('/:tagName/posts', async (req, res, next) => {
   const { tagName } = req.params;
   try {
-    const posts = await getPostsByTagName(tagName);
+    const allPosts = await getPostsByTagName(tagName);
+    const posts = allPosts.filter((post) => {
+      return post.active || (req.user && post.author.id === req.user.id);
+    });
+
     if (posts.length === 0) {
       next({
         name: 'no posts with this tag',
