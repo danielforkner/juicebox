@@ -50,7 +50,7 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
-      tags: ['testing', 'tags', 'test'],
+      tags: ['#testing', '#tags', '#test'],
     });
 
     await createPost({
@@ -58,7 +58,7 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
-      tags: ['testing', 'tags', 'test'],
+      tags: ['#testing', '#tags', '#test'],
     });
 
     await createPost({
@@ -66,7 +66,7 @@ async function createInitialPosts() {
       title: 'First Post',
       content:
         'This is my first post. I hope I love writing blogs as much as I love writing them.',
-      tags: ['testing', 'tags', 'test'],
+      tags: ['#testing', '#tags', '#test'],
     });
   } catch (error) {
     throw error;
