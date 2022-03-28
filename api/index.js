@@ -45,10 +45,10 @@ apiRouter.use((req, res, next) => {
   next();
 });
 
-// apiRouter.use("/", (req, res, next) => {
-//   req.message("you are on the api page");
-//   next();
-// });
+apiRouter.use('/', (req, res, next) => {
+  req.message('you are on the api page');
+  next();
+});
 apiRouter.use('/users', usersRouter);
 apiRouter.use('/posts', postsRouter);
 apiRouter.use('/tags', tagsRouter);
