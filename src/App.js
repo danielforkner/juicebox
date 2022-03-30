@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route } from "react-router-dom";
 import axios from "axios";
 
-async function clickHandler() {
-  const response = await axios.get("/api/posts");
-  console.log(response);
-}
-
 function App() {
-  return <button onClick={clickHandler}>Get Posts</button>;
+  const [posts, setPosts] = useState([]);
+  const [tags, setTags] = useState([]);
+  async function clickHandler() {
+    const response = await axios.get("/api/posts");
+    setPosts(response.data.posts);
+  }
+  async function clickHandler2() {
+    const response = await axios.get("/api/tags");
+    console.log(response.data.tags, "test");
+    setTags(response.data.tags);
+  }
+  return (
+    <div>
+      <button onClick={clickHandler}>Get Posts</button>
+      <div className="posts">
+        {posts.map((post) => {
+          return <div>{post.title}</div>;
+        })}
+      </div>
+
+      <button onClick={clickHandler2}>Get Tags</button>
+      <div className="tags">
+        {tags.map((tag) => {
+          return <div>{tag.name}</div>;
+        })}
+      </div>
+    </div>
+  );
 }
 
 export default App;
