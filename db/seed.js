@@ -55,17 +55,17 @@ async function createInitialPosts() {
 
     await createPost({
       authorID: sandra.id,
-      title: 'First Post',
+      title: 'Second Post',
       content:
-        'This is my first post. I hope I love writing blogs as much as I love writing them.',
+        'This is my second post. I hope I love writing blogs as much as I love writing them.',
       tags: ['#testing', '#tags', '#test'],
     });
 
     await createPost({
       authorID: glamgal.id,
-      title: 'First Post',
+      title: 'Third Post',
       content:
-        'This is my first post. I hope I love writing blogs as much as I love writing them.',
+        'This is my third post. I hope I love writing blogs as much as I love writing them.',
       tags: ['#testing', '#tags', '#test'],
     });
   } catch (error) {
@@ -79,11 +79,11 @@ async function createInitialPosts() {
 
 //     const [bigdogs, smalldogs, largedogs, tinydogs, friendlydogs] =
 //       await createTags([
-//         'bigdogs',
-//         'smalldogs',
-//         'largedogs',
-//         'tinydogs',
-//         'friendlydogs',
+//         '#bigdogs',
+//         '#smalldogs',
+//         '#largedogs',
+//         '#tinydogs',
+//         '#friendlydogs',
 //       ]);
 
 //     const [postOne, postTwo, postThree] = await getAllPosts();
