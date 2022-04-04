@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Route } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Route } from "react-router-dom";
+import axios from "axios";
 
 function App() {
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
   async function clickHandler() {
-    const response = await axios.get('/api/posts');
+    const response = await axios.get("/api/posts");
     setPosts(response.data.posts);
   }
   async function clickHandler2() {
-    const response = await axios.get('/api/tags');
-    console.log(response.data.tags, 'test');
+    const response = await axios.get("/api/tags");
+    console.log(response.data.tags, "test");
     setTags(response.data.tags);
   }
   return (
@@ -25,7 +25,7 @@ function App() {
               <p>{post.content}</p>
               <p>
                 {post.tags.map((tag) => {
-                  return `${tag} `;
+                  return `${tag.name} `;
                 })}
               </p>
             </div>
